@@ -1,30 +1,29 @@
-var pronoun = ['the','our', 'pu', 'on', 'by'];
-var adj = ['great', 'big', 'ed', 'amfi', 'biggest', 'tiny'];
-var noun = ['jogger','racoon', 'es', 'frorg', 'dog', 'cat'];
+let pronouns = ['the','our', 'your', 'tu', 'my'];
+let adjs = ['great', 'big', 'tiny', 'small'];
+let nouns = ['jogger','racoon', 'puedes', 'turtle', 'bear', 'wolf'];
 
-var domains = ['.com', '.net', '.us', '.io', '.org', '.es', '.ar', '.ru'];
+let domains = ['com', 'es', 'net', 'ru', 'ar']
 
-var hacklist=[]
-
-const mapEachpro = word => { let out=[]
-for(let items of adj){
-	for(let nouns of noun){
-		out.push(word+items+nouns)
+let genWords = []
+for(let pronoun of pronouns){
+	for(let adj of adjs){
+		for(let noun of nouns){
+			genWords.push(pronoun+adj+noun)
+		}
 	}
-} return out }
+}
 
-const genList = pronoun.map(mapEachpro).flat()
+let domainHacks = []
+const checkHack= (word, domain) => 
+domain == word.slice(word.length-domain.length, word.length+domain.length)
+? true : false
 
-const checkdmhk = (word, domain)=> word.slice(word.length - domain.length + 1, word.length).search(domain.slice(1, domain.length)) != -1 ? word.slice(0 , word.length - domain.length + 1)+domain : false
-
-const mapDomains = (domain) => { let out=[]
-	genList.forEach(word => {
-	out.push(word+domain)
-	let hack= checkdmhk(word,domain)
-	if(hack!=false)hacklist.push(hack)})
-return out }
-
-const finalList = domains.map(mapDomains)[0]
-
-console.log('Generated Domains: ', finalList)
-console.log('Found Domain Hacks:', hacklist)
+const resultingDomains = genWords.map( (word) => { let out=[]
+  		domains.forEach( (domain) => {
+			out.push(word+'.'+domain)
+			if(checkHack(word, domain))domainHacks.push(word.slice(0, word.length-domain.length)+'.'+domain)
+  		} )
+  return out } ).flat()
+  
+console.log('Domains:',resultingDomains)
+console.log('Domain Hacks:',domainHacks)
